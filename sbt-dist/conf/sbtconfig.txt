@@ -1,12 +1,3 @@
-# Set the java args to high
-
--Xmx512M
-
--XX:MaxPermSize=256m
-
--XX:ReservedCodeCacheSize=128m
-
-
 
 # Set the extra SBT options
 
