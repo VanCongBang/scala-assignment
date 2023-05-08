@@ -1,7 +1,5 @@
 -- !Ups
-
-CREATE SCHEMA scalademo
-
+CREATE SCHEMA testing;
 -- !Downs
+DROP SCHEMA testing;
 
-DROP SCHEMA scalademo

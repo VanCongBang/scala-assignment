@@ -5,9 +5,9 @@
 # Authn & Authz Endpoints
 GET         /unsecured                         controllers.auth.UnsecuredResourceController.index
 
-POST        /signUp                            controllers.auth.AuthController.signUp
+POST        /register                          controllers.auth.AuthController.signUp
 
-POST        /signIn                            controllers.auth.AuthController.signIn
+POST        /login                             controllers.auth.AuthController.signIn
 
 # Post Endpoints mapped one for all (redirected by Router)
 ->          /v1/posts                          controllers.post.PostRouter

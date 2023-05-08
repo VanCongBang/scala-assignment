@@ -1,14 +1,17 @@
 package domain.models
 
 import com.mohiva.play.silhouette.api.util.PasswordInfo
-import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
+import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.password.BCryptSha256PasswordHasher
+
+import java.time.LocalDateTime
 
 /**
  * The User class
  */
-case class User(id: Option[Long], email: String, role: String, name: String, lastName: String, password: Option[String] = None)
+case class User(id: Option[Long], email: String, firstName: String, lastName: String, 
+                password: Option[String] = None, role: String, birthDate: LocalDateTime, address: String, phoneNumber: String)
   extends Identity {
 
   /**
