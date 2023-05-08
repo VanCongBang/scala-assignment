@@ -46,12 +46,20 @@ trait UserService extends IdentityService[User] {
   def update(user: User): Future[User]
 
   /**
+   * Update User by ID
+   * @param id User's ID
+   * @param user The user to update
+   * @return
+   */
+  def updateById(id: Long, user: User): Future[User]
+
+  /**
    * Deletes a user.
    *
    * @param email The user's email to delete.
    * @return The deleted user.
    */
-  def delete(email: String): Future[Int]
+  def delete(id: Long): Future[Int]
 }
 
 /**
@@ -79,7 +87,9 @@ class UserServiceImpl @Inject() (userDao: UserDao)(implicit ex: ExecutionContext
 
   override def update(user: User): Future[User] = userDao.update(user)
 
-  override def delete(email: String): Future[Int] = userDao.delete(email)
+  override def updateById(id: Long, user: User): Future[User] = userDao.updateById(id, user)
+
+  override def delete(id: Long): Future[Int] = userDao.delete(id)
 }
 
 

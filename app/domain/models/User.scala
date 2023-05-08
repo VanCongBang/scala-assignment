@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 /**
  * The User class
  */
-case class User(id: Option[Long], email: String, firstName: String, lastName: String, 
+case class User(id: Option[Long], email: String, firstName: String, lastName: String,
                 password: Option[String] = None, role: String, birthDate: LocalDateTime, address: String, phoneNumber: String)
   extends Identity {
 

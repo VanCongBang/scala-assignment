@@ -16,13 +16,12 @@ POST        /login                             controllers.auth.AuthController.s
 GET          /v1/external/posts                controllers.post.PostController.getAllExternal
 POST         /v1/external/posts                controllers.post.PostController.createExternal
 
-# Post Endpoints mapped one-by-one
-# GET        /v1/posts                         controllers.post.PostController.getAll
-# GET        /v1/posts/:id                     controllers.post.PostController.getById(id: Long)
-# POST       /v1/posts                         controllers.post.PostController.create
-# PUT        /v1/posts/:id                     controllers.post.PostController.update(id: Long)
-# DELETE     /v1/posts/:id                     controllers.post.PostController.delete(id: Long)
-
+# USERS Endpoint
+ GET        /v1/users                         controllers.user.UserController.getAll
+ GET        /v1/users/:id                     controllers.user.UserController.getById(id: Long)
+ POST       /v1/users                         controllers.user.UserController.create
+ PUT        /v1/users/:id                     controllers.user.UserController.update(id: Long)
+ DELETE     /v1/users/:id                     controllers.user.UserController.delete(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 #GET         /assets/*file                     controllers.Assets.versioned(file)

@@ -59,11 +59,19 @@ trait UserDao {
   def update(user: User): Future[User]
 
   /**
+   * Update User by ID
+   * @param id User's ID
+   * @param user The user to update
+   * @return
+   */
+  def updateById(id: Long, user: User): Future[User]
+
+  /**
    * Deletes a user
    * @param email The user's email to delete.
    * @return The deleted user.
    */
-  def delete(email: String): Future[Int]
+  def delete(id: Long): Future[Int]
 }
 
 /**
@@ -102,7 +110,11 @@ class UserDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutionContex
     users.filter(_.email === user.email).update(user).map(_ => user)
   }
 
-  override def delete(email: String): Future[Int] = daoRunner.run {
-    users.filter(_.email === email).delete
+  override def delete(id: Long): Future[Int] = daoRunner.run {
+    users.filter(_.id === id).delete
+  }
+
+  override def updateById(id: Long, user: User): Future[User] = daoRunner.run {
+    users.filter(_.id === id).update(user).map(_ => user)
   }
 }
