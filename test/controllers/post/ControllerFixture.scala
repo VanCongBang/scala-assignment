@@ -17,6 +17,7 @@ import play.api.Application
 import services._
 import utils.auth.JWTEnvironment
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ControllerFixture extends PlaySpec with Suite with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
@@ -27,7 +28,7 @@ class ControllerFixture extends PlaySpec with Suite with GuiceOneAppPerSuite wit
   val mockPostDao: PostDao = mock[PostDao]
 
   val password: String = new BCryptPasswordHasher().hash("fakeP@ssw0rd").password
-  val identity: User = User(Some(1L), "user-admin@test.com", "Admin", "admin" , "user", Some(password))
+  val identity: User = User(Some(1L), "user-admin@test.com", "Admin", "Test" , Some(password), "Admin", LocalDateTime.now(), "Ho Chi Minh City", "098347323")
   implicit val env: Environment[JWTEnvironment] = new FakeEnvironment[JWTEnvironment](Seq(identity.loginInfo -> identity))
 
   class FakeServiceModule extends AbstractModule with ScalaModule {

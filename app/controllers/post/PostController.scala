@@ -9,7 +9,7 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc._
-import services.{ExternalPostService, PostService, UserService}
+import services.{ExternalPostService, PostService}
 import utils.auth.{JWTEnvironment, WithRole}
 import utils.logging.RequestMarkerContext
 
@@ -26,7 +26,6 @@ case class PostFormInput(author: Long, title: String, content: String, descripti
 class PostController @Inject() (cc: ControllerComponents,
                                 postService: PostService,
                                 extPostService: ExternalPostService,
-                                userService: UserService,
                                 silhouette: Silhouette[JWTEnvironment])
                                (implicit ec: ExecutionContext)
   extends AbstractController(cc) with RequestMarkerContext {

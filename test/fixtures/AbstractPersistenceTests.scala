@@ -12,7 +12,7 @@ trait AbstractPersistenceTests extends Suite with GuiceOneAppPerSuite with Befor
 
   implicit override lazy val app: Application = TestApplication.app(
     additionalConfiguration = Map(
-      "slick.dbs.default.db.url" -> postgres.getJdbcUrl("postgres", "postgres")
+      "slick.dbs.default.db.url" -> postgres.getJdbcUrl("postgres", "bacoba190392!")
     )
   )
 
