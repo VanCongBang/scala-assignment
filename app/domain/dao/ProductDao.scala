@@ -31,7 +31,7 @@ trait ProductDao {
    * @param Product The Product to save.
    * @return The saved Product.
    */
-  def save(Product: Product): Future[Product]
+  def save(product: Product): Future[Product]
 
   /**
    * Saves all Products.
@@ -47,7 +47,7 @@ trait ProductDao {
    * @param Product The Product to update
    * @return
    */
-  def updateById(id: Long, Product: Product): Future[Product]
+  def updateById(id: Long, product: Product): Future[Product]
 
   /**
    * Deletes a Product
@@ -67,29 +67,29 @@ trait ProductDao {
 class ProductDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutionContext)
   extends ProductDao {
 
-  private val Products = TableQuery[ProductTable]
+  private val products = TableQuery[ProductTable]
 
   override def find(id: Long): Future[Option[Product]] = daoRunner.run {
-    Products.filter(_.id === id).result.headOption
+    products.filter(_.id === id).result.headOption
   }
 
   override def listAll(): Future[Iterable[Product]] = daoRunner.run {
-    Products.result
+    products.result
   }
 
-  override def save(Product: Product): Future[Product] = daoRunner.run {
-    Products returning Products += Product
+  override def save(product: Product): Future[Product] = daoRunner.run {
+    products returning products += product
   }
 
   override def saveAll(list: Seq[Product]): Future[Seq[Product]] = daoRunner.run {
-    (Products ++= list).map(_ => list)
+    (products ++= list).map(_ => list)
   }
 
   override def delete(id: Long): Future[Int] = daoRunner.run {
-    Products.filter(_.id === id).delete
+    products.filter(_.id === id).delete
   }
 
-  override def updateById(id: Long, Product: Product): Future[Product] = daoRunner.run {
-    Products.filter(_.id === id).update(Product).map(_ => Product)
+  override def updateById(id: Long, product: Product): Future[Product] = daoRunner.run {
+    products.filter(_.id === id).update(product).map(_ => product)
   }
 }

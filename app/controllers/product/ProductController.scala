@@ -4,7 +4,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.api.actions.SecuredActionBuilder
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import domain.models.Product
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc._
@@ -23,7 +23,8 @@ case class ProductFormInput(productName: String, price: BigDecimal , expDate: Lo
  */
 class ProductController @Inject() (cc: ControllerComponents,
                                    productService: ProductService,
-                                   silhouette: Silhouette[JWTEnvironment])
+                                   silhouette: Silhouette[JWTEnvironment],
+                                   configuration: Configuration)
                                (implicit ec: ExecutionContext)
   extends AbstractController(cc) with RequestMarkerContext {
 
@@ -44,7 +45,7 @@ class ProductController @Inject() (cc: ControllerComponents,
   }
 
   def getById(id: Long): Action[AnyContent] =
-    SecuredAction(WithRole[JWTAuthenticator]("Admin", "Operator")).async { implicit request =>
+        SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
       logger.trace(s"getById: $id")
       productService.find(id).map {
         case Some(product) => Ok(Json.toJson(ProductResource.fromProduct(product)))
@@ -53,7 +54,7 @@ class ProductController @Inject() (cc: ControllerComponents,
     }
 
   def getAll: Action[AnyContent] =
-    SecuredAction(WithRole[JWTAuthenticator]("Admin", "Operator")).async { implicit request =>
+    SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
       logger.trace("getAll Products")
       productService.listAll().map { products =>
         Ok(Json.toJson(products.map(product => ProductResource.fromProduct(product))))
@@ -61,19 +62,19 @@ class ProductController @Inject() (cc: ControllerComponents,
     }
 
   def create: Action[AnyContent] =
-    SecuredAction(WithRole[JWTAuthenticator]("Admin", "Operator")).async { implicit request =>
+        SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
       logger.trace("create Product: ")
       processJsonProduct(None)
     }
 
   def update(id: Long): Action[AnyContent] =
-    SecuredAction(WithRole[JWTAuthenticator]("Admin", "Operator")).async { implicit request =>
+        SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
       logger.trace(s"update Product id: $id")
       processJsonProduct(Some(id))
     }
 
   def delete(id: Long): Action[AnyContent] =
-    SecuredAction(WithRole[JWTAuthenticator]("Admin", "Operator")).async { implicit request =>
+        SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
       logger.trace(s"Delete Product: id = $id")
       productService.delete(id).map { deletedCnt =>
         if (deletedCnt == 1) Ok(JsString(s"Delete Product $id successfully"))

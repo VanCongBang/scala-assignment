@@ -30,6 +30,13 @@ POST         /v1/external/posts                controllers.post.PostController.c
  PUT        /v1/products/:id                     controllers.product.ProductController.update(id: Long)
  DELETE     /v1/products/:id                     controllers.product.ProductController.delete(id: Long)
 
+# ORDERS Endpoint
+ GET        /v1/orders                         controllers.order.OrderController.getAll
+ GET        /v1/orders/:id                     controllers.order.OrderController.getById(id: Long)
+ POST       /v1/orders                         controllers.order.OrderController.create
+ PUT        /v1/orders/:id                     controllers.order.OrderController.update(id: Long)
+ DELETE     /v1/orders/:id                     controllers.order.OrderController.delete(id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 #GET         /assets/*file                     controllers.Assets.versioned(file)
 #->          /webjars                          webjars.Routes
