@@ -31,7 +31,7 @@ POST         /v1/external/posts                controllers.post.PostController.c
  DELETE     /v1/products/:id                     controllers.product.ProductController.delete(id: Long)
 
 # ORDERS Endpoint
- GET        /v1/orders                         controllers.order.OrderController.getAll
+# GET        /v1/orders                         controllers.order.OrderController.getAll
  GET        /v1/orders/:id                     controllers.order.OrderController.getById(id: Long)
  POST       /v1/orders                         controllers.order.OrderController.create
  PUT        /v1/orders/:id                     controllers.order.OrderController.update(id: Long)

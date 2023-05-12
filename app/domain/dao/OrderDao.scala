@@ -54,7 +54,7 @@ trait OrderDao {
    * @param email The Order's email to delete.
    * @return The deleted Order.
    */
-  def delete(id: Long): Future[Int]
+  def delete(id: Long, userId: Long): Future[Int]
 }
 
 /**
@@ -85,8 +85,8 @@ class OrderDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutionConte
     (orders ++= list).map(_ => list)
   }
 
-  override def delete(id: Long): Future[Int] = daoRunner.run {
-    orders.filter(_.id === id).delete
+  override def delete(id: Long, userId: Long): Future[Int] = daoRunner.run {
+    orders.filter(_.id === id).filter(_.userId === userId).delete
   }
 
   override def updateById(id: Long, order: Order): Future[Order] = daoRunner.run {

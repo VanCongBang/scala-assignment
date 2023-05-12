@@ -44,6 +44,8 @@ trait OrderDetailService {
    * @return
    */
   def delete(id: Long): Future[Int]
+
+  def saveAll(orderDetails: Seq[OrderDetail]): Future[Seq[OrderDetail]]
 }
 
 /**
@@ -57,6 +59,8 @@ class OrderDetailServiceImpl @Inject()(orderDetailDao: OrderDetailDao)(implicit 
   override def listAll(): Future[Iterable[OrderDetail]] = orderDetailDao.listAll()
 
   override def save(orderDetail: OrderDetail): Future[OrderDetail] = orderDetailDao.save(orderDetail)
+
+  override def saveAll(orderDetails: Seq[OrderDetail]): Future[Seq[OrderDetail]] = orderDetailDao.saveAll(orderDetails)
   
   override def updateById(id: Long, orderDetail: OrderDetail): Future[OrderDetail] = orderDetailDao.updateById(id, orderDetail)
 

@@ -3,7 +3,7 @@ package domain.models
 import play.api.libs.json.{Json, OFormat}
 
 case class OrderDetail(id: Option[Long],
-                       orderId : Long,
+                       orderId : Option[Long],
                        productId : Long,
                        quantity : Long,
                        price : BigDecimal)

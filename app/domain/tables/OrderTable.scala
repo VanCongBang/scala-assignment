@@ -27,5 +27,5 @@ class OrderTable(tag: Tag) extends Table[Order](tag, Some("testing"), "orders") 
   def * = (id, userId, orderDate, totalPrice) <> ((Order.apply _).tupled, Order.unapply)
 
   val users = TableQuery[UserTable]
-  def user = foreignKey("fk_user", userId, users)(_.id.get, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  def user = foreignKey("fk_user", userId, users)(_.id.get)
 }

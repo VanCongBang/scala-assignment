@@ -14,7 +14,7 @@ trait OrderDetailDao {
    * @param orderId
    * @return
    */
-  def findByOrderId(orderId: Long): Future[Iterable[OrderDetail]]
+  def findByOrderId(orderId: Long): Future[Seq[OrderDetail]]
   /**
    * List all OrderDetails.
    *
@@ -86,7 +86,7 @@ class OrderDetailDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutio
     orderDetails.filter(_.id === id).update(orderDetail).map(_ => orderDetail)
   }
 
-  override def findByOrderId(orderId: Long): Future[Iterable[OrderDetail]] = daoRunner.run {
+  override def findByOrderId(orderId: Long): Future[Seq[OrderDetail]] = daoRunner.run {
     orderDetails.filter(_.orderId === orderId).result
   }
 }

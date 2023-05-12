@@ -1,9 +1,7 @@
 package domain.tables
 
-import domain.models.{Order, OrderDetail}
+import domain.models.OrderDetail
 import slick.jdbc.PostgresProfile.api._
-
-import java.time.LocalDateTime
 
 class OrderDetailTable(tag: Tag) extends Table[OrderDetail](tag, Some("testing"), "orderdetails") {
 
@@ -11,14 +9,14 @@ class OrderDetailTable(tag: Tag) extends Table[OrderDetail](tag, Some("testing")
   def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc, O.Unique)
 
   /** The order_id FK column */
-  def orderId = column[Long]("order_id")
+  def orderId = column[Option[Long]]("order_id")
   lazy val orderTable = TableQuery[OrderTable]
   def order = foreignKey("fk_order", orderId, orderTable)(_.id.get, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
 
   /** The product_id FK column */
   def productId = column[Long]("product_id")
   lazy val productTable = TableQuery[ProductTable]
-  def product = foreignKey("fk_product", productId, productTable)(_.id.get, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  def product = foreignKey("fk_product", productId, productTable)(_.id.get)
   
   /** The quantity column */
   def quantity = column[Long]("quantity")
