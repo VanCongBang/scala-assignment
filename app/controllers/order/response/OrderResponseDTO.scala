@@ -11,7 +11,7 @@ import java.time.LocalDateTime
  */
 case class OrderResponseDTO(id: Long,
                             userId: Long,
-                            orderDetails: Option[Seq[OrderDetailResponseDTO]],
+                            orderDetails: Seq[OrderDetailResponseDTO],
                             totalPrice: BigDecimal,
                             orderDate: LocalDateTime)
 

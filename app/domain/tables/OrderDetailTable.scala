@@ -10,8 +10,8 @@ class OrderDetailTable(tag: Tag) extends Table[OrderDetail](tag, Some("testing")
 
   /** The order_id FK column */
   def orderId = column[Option[Long]]("order_id")
-  lazy val orderTable = TableQuery[OrderTable]
-  def order = foreignKey("fk_order", orderId, orderTable)(_.id.get, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+//  lazy val orderTable = TableQuery[OrderTable]
+//  def order = foreignKey("fk_order", orderId, orderTable)(_.id.get, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
 
   /** The product_id FK column */
   def productId = column[Long]("product_id")

@@ -9,13 +9,6 @@ POST        /register                          controllers.auth.AuthController.s
 
 POST        /login                             controllers.auth.AuthController.signIn
 
-# Post Endpoints mapped one for all (redirected by Router)
-->          /v1/posts                          controllers.post.PostRouter
-
-# Routing to external posts endpoints
-GET          /v1/external/posts                controllers.post.PostController.getAllExternal
-POST         /v1/external/posts                controllers.post.PostController.createExternal
-
 # USERS Endpoint
  GET        /v1/users                         controllers.user.UserController.getAll
  GET        /v1/users/:id                     controllers.user.UserController.getById(id: Long)
@@ -31,7 +24,7 @@ POST         /v1/external/posts                controllers.post.PostController.c
  DELETE     /v1/products/:id                     controllers.product.ProductController.delete(id: Long)
 
 # ORDERS Endpoint
-# GET        /v1/orders                         controllers.order.OrderController.getAll
+ GET        /v1/orders                         controllers.order.OrderController.getAll
  GET        /v1/orders/:id                     controllers.order.OrderController.getById(id: Long)
  POST       /v1/orders                         controllers.order.OrderController.create
  PUT        /v1/orders/:id                     controllers.order.OrderController.update(id: Long)

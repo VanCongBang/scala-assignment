@@ -8,7 +8,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc._
 import play.api.{Configuration, Logger}
-import services.{OrderDetailService, OrderService}
+import services.OrderService
 import utils.auth.{JWTEnvironment, WithRole}
 import utils.logging.RequestMarkerContext
 
@@ -51,14 +51,14 @@ class OrderController @Inject() (cc: ControllerComponents,
         Ok(Json.toJson(orders))
       }
     }
-//
-//  def getAll: Action[AnyContent] =
-//    SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
-//      logger.trace("getAll Orders")
-//      orderService.listAll().map { orders =>
-//        Ok(Json.toJson(orders.map(order => OrderResponseDTO.fromOrder(order))))
-//      }
-//    }
+
+  def getAll: Action[AnyContent] =
+    SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
+      logger.trace("getAll Orders")
+      orderService.listAll().map { orders =>
+        Ok(Json.toJson(orders))
+      }
+    }
   
   def create: Action[AnyContent] =
         SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
@@ -73,7 +73,7 @@ class OrderController @Inject() (cc: ControllerComponents,
     }
 
   def delete(id: Long): Action[AnyContent] =
-        SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.op"))).async { implicit request =>
+        SecuredAction(WithRole[JWTAuthenticator](configuration.underlying.getString("role.admin"), configuration.underlying.getString("role.user"))).async { implicit request =>
       logger.trace(s"Delete Order: id = $id")
       orderService.delete(id, request.identity.id.get).map { deletedCnt =>
         if (deletedCnt == 1) Ok(JsString(s"Delete Order $id successfully"))
@@ -87,8 +87,15 @@ class OrderController @Inject() (cc: ControllerComponents,
     }
 
     def success(input: OrderInputDTO) = {
-      orderService.save(input, userId).map { 
-        order => Created(Json.toJson(order))
+      if (id.nonEmpty){
+        orderService.update(input, id.get, userId).map {
+          order => Ok(Json.toJson(order))
+        }
+      }
+      else{
+        orderService.save(input, userId).map {
+          order => Created(Json.toJson(order))
+        }
       }
     }
     

@@ -7,7 +7,9 @@ import domain.dao.{OrderDao, OrderDetailDao}
 import domain.models.{Order, OrderDetail}
 
 import java.time.LocalDateTime
-import scala.concurrent.{ExecutionContext, Future}
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 @ImplementedBy(classOf[OrderServiceImpl])
 trait OrderService {
@@ -25,7 +27,7 @@ trait OrderService {
    *
    * @return All existing Orders.
    */
-  def listAll(): Future[Iterable[Order]]
+  def listAll(): Future[Iterable[OrderResponseDTO]]
 
   /**
    * Saves a Order.
@@ -41,7 +43,7 @@ trait OrderService {
    * @param order The Order to update
    * @return
    */
-  def updateById(id: Long, order: Order): Future[Order]
+  def update(orderInputDTO: OrderInputDTO, id: Long, userId: Long): Future[OrderResponseDTO]
 
   /**
    * Delete Order by ID
@@ -63,18 +65,26 @@ class OrderServiceImpl @Inject()(orderDao: OrderDao,
   
   override def find(id: Long): Future[OrderResponseDTO] = {
     orderDao.find(id).flatMap {
-      case Some(order) => {
-          orderDetailDao.findByOrderId(order.id.get).map {
-            details => OrderResponseDTO(id, order.userId, Some(details.map(x => OrderDetailResponseDTO.fromOrderDetail(x))), order.totalPrice, order.orderDate)
-//            case Some(details) => OrderResponseDTO(id, order.userId, Some(details.map(x => OrderDetailResponseDTO.fromOrderDetail(x))), order.totalPrice, order.orderDate)
-//            case None => OrderResponseDTO(id, order.userId, None, order.totalPrice, order.orderDate)
-          }
-        }
-      }
+      case Some(order) =>
+        toOrderResponseDTO(order)
+    }
   }
-
-  override def listAll(): Future[Iterable[Order]] = orderDao.listAll()
-
+  
+  def toOrderResponseDTO ( order: Order ): Future[OrderResponseDTO] = {
+    orderDetailDao.findByOrderId(order.id.get).map {
+      details => OrderResponseDTO(order.id.get, order.userId, details.map(x => OrderDetailResponseDTO.fromOrderDetail(x)), order.totalPrice, order.orderDate)
+    }
+  }
+  
+  def toOrderWithDetails (order: Order) : OrderResponseDTO = {
+    val orderDetailList = Await.result(orderDetailDao.findByOrderId(order.id.get), 60.seconds)
+    OrderResponseDTO(order.id.get, order.userId, OrderDetailResponseDTO.fromOrderDetailSeq(orderDetailList) , order.totalPrice, order.orderDate)
+  }
+  
+  override def listAll(): Future[Iterable[OrderResponseDTO]] = {
+    orderDao.listAll().map(orders => orders.map(order => toOrderWithDetails(order)))
+  }
+  
   override def save(orderInputDTO: OrderInputDTO, userId: Long): Future[OrderResponseDTO] = {
     //Save order details
     var totalPrice = BigDecimal(0)
@@ -91,16 +101,47 @@ class OrderServiceImpl @Inject()(orderDao: OrderDao,
         orderDetailDao.saveAll(orderDetails).map(
           details => {
             val orderDetailResponseDTOs = details.map(detail => OrderDetailResponseDTO.fromOrderDetail(detail))
-            OrderResponseDTO(ord.id.getOrElse(-1), userId, Some(orderDetailResponseDTOs), totalPrice, LocalDateTime.now())
+            OrderResponseDTO(ord.id.getOrElse(-1), userId, orderDetailResponseDTOs, totalPrice, LocalDateTime.now())
           }
         )
       }
     )
   }
   
-  override def updateById(id: Long, order: Order): Future[Order] = orderDao.updateById(id, order)
+  override def update(orderInputDTO: OrderInputDTO, id: Long, userId: Long): Future[OrderResponseDTO] = {
+    //clear all orderDetails
+    orderDetailDao.findByOrderId(id).map(
+      details => details.foreach(detail => orderDetailDao.delete(detail.id.get))
+    )
 
-  override def delete(id: Long, userId: Long): Future[Int] = orderDao.delete(id, userId)
+    //update new totalPrice
+    var totalPrice = BigDecimal(0)
+    var orderDetails = orderInputDTO.orderDetails.map(detail =>
+    {
+      totalPrice = totalPrice.+(detail.price*detail.quantity)
+      OrderDetail(None, None, detail.productId, detail.quantity, detail.price)
+    })
+
+    //Save order
+    val order = Order(Some(id), userId, LocalDateTime.now(), totalPrice)
+    orderDao.update(id, userId, order).flatMap(
+      ord => {
+        orderDetails = orderDetails.map(detail => detail.copy(orderId = Option(ord.id.get)))
+        orderDetailDao.saveAll(orderDetails).map(
+          details => {
+            OrderResponseDTO(ord.id.getOrElse(-1), userId, OrderDetailResponseDTO.fromOrderDetailSeq(details), totalPrice, LocalDateTime.now())
+          }
+        )
+      }
+    )
+  }
+
+  override def delete(id: Long, userId: Long): Future[Int] = {
+    orderDetailDao.findByOrderId(id).map(
+      details => details.foreach(detail => orderDetailDao.delete(detail.id.get))
+    )
+    orderDao.delete(id, userId)
+  }
 }
 
 

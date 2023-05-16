@@ -47,7 +47,7 @@ trait OrderDao {
    * @param Order The Order to update
    * @return
    */
-  def updateById(id: Long, order: Order): Future[Order]
+  def update(id: Long, userId: Long, order: Order): Future[Order]
 
   /**
    * Deletes a Order
@@ -89,7 +89,7 @@ class OrderDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutionConte
     orders.filter(_.id === id).filter(_.userId === userId).delete
   }
 
-  override def updateById(id: Long, order: Order): Future[Order] = daoRunner.run {
+  override def update(id: Long, userId: Long, order: Order): Future[Order] = daoRunner.run {
     orders.filter(_.id === id).update(order).map(_ => order)
   }
 }

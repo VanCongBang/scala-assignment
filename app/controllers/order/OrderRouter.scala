@@ -13,8 +13,8 @@ import javax.inject.{Inject, Singleton}
 class OrderRouter @Inject()(controller: OrderController) extends SimpleRouter {
 
   override def routes: Routes = {
-//    case GET(p"/") =>
-//      controller.getAll
+    case GET(p"/") =>
+      controller.getAll
 
     case GET(p"/$id") =>
       controller.getById(id.toLong)
