@@ -94,7 +94,7 @@ class ProductController @Inject() (cc: ControllerComponents,
 
       // check case update or create new
       if (id.nonEmpty) {
-        productService.updateById(id.get,product).map { product =>
+        productService.update(product).map { product =>
           Ok(Json.toJson(ProductResource.fromProduct(product)))
         }
       }

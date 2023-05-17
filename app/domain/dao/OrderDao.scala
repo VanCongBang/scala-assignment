@@ -90,6 +90,6 @@ class OrderDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutionConte
   }
 
   override def update(id: Long, userId: Long, order: Order): Future[Order] = daoRunner.run {
-    orders.filter(_.id === id).update(order).map(_ => order)
+    orders.filter(_.id === id).filter(_.userId === userId).update(order).map(_ => order)
   }
 }

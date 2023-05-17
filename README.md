@@ -12,53 +12,6 @@
 - Logging (Logback)
 
 ### Project Structure
-```
-── scala-demo
-   ├── app                                            # The Scala application source code
-   │   ├── utils
-   │   │   └── auth                                   # Authentication utils
-   │   ├── domain
-   │   │   ├── tables                                 # Slick tables
-   │   │   │   ├── PostTable.scala                    # Represents posts table
-   │   │   │   └── UserTable.scala                    # Represents users table
-   │   │   ├── models                                 # Contains UserService with its implementation
-   │   │   │   ├── Post.scala                         # Post model
-   │   │   │   └── User.scala                         # User model
-   │   │   └── daos
-   │   │       ├── DaoRunner.scala                    # Run Slick database actions by transactions
-   │   │       ├── DbExecutionContext.scala           # Custom ExecutionContext for running DB connections
-   │   │       ├── PasswordInfoDao.scala              # Password dao
-   │   │       ├── PostDao.scala                      # Post dao
-   │   │       └── UserDao.scala                      # User dao
-   │   ├── system                                     # Play modules
-   │   │   └── modules
-   │   │       ├── AppModule.scala                    # Bind all application components (Same as Spring @Configuration)
-   │   │       └── SilhouetteModule.scala             # Bind silhouette components
-   │   └── controllers                                # Application controllers
-   │       ├── auth                                   
-   │       │   ├── AuthController.scala               # SignUp/SignIn controllers
-   │       │   ├── SilhouetteController.scala         # Abstract silhouette controller
-   │       │   ├── UnsecuredResourceController.scala  # Example of a un-secured endpoint
-   │       └── post                                   
-   │           ├── PostController.scala               # Post controllers for CRUD a post
-   │           ├── PostControllerComponents.scala     # Post Controller components
-   │           ├── PostResource.scala                 # Request/Response Post dto
-   │           └── PostRouter.scala                   # Post endpoints routing
-   ├── test
-   ├── conf
-   │   ├── messages                               # Error Messages for messages API
-   │   ├── evolutions                             # Play evolutions SQL queries
-   │   │   └── default                            # Default database
-   │   │       ├── 1.sql                          # Creates schema
-   │   │       └── 2.sql                          # Creates db tables
-   │   ├── application.conf                       # Play configuration
-   │   ├── routes                                 # Play routing
-   │   ├── db.conf                                # Database configuration
-   │   └── silhouette.conf                        # Silhouette configuration
-   ├── project
-   ├── build.sbt
-   └── target
-```
 
 ### Getting Started
 
@@ -93,12 +46,35 @@ or To generate code coverage report with SCoverage
 
 ### Usage
 _Ref: Postman collection at `postman` folder_
+Authentication
+- POST /login – Login to application with JWT Authentication support
 
-1. Create an User by using `POST /SignUp` endpoint
-2. You can access the `GET /Unsecured` endpoint without login
-3. Using `POST- /SignIn` endpoint to login with newly created user to get JWT token in `X-Auth` response header
-4. Get All Posts via `GET /v1/posts` endpoint -> empty list returned at first
-5. Create a new Post by using `POST /v1/posts` endpoint
-6. Get All Posts via `GET /v1/posts` endpoint again -> Only one created Post shown
-7. Get single Post via `GET /v1/posts/:id`
-8. Delete existing Post via `DELETE /v1/posts/:id` endpoint
+Users
+1. GET /users - retrieves a list of all users.
+2. POST /users - creates a new user.
+3. GET /users/:id - retrieves a user by ID.
+4. PUT /users/:id - updates an existing user by ID.
+5. DELETE /users/:id - deletes a
+
+Products
+1. GET /products - retrieves a list of all products.
+2. POST /products - creates a new product.
+3. GET /products/:id - retrieves a product by ID.
+4. PUT /products/:id - updates an existing product by ID.
+5. DELETE /products/:id - deletes a product by ID. 
+
+Orders
+1. GET /orders - retrieves a list of all orders.
+2. POST /orders - creates a new order.
+3. GET /orders/:id - retrieves an order by ID.
+4.PUT /orders/:id - updates an existing order by ID.
+5. DELETE /orders/:id - deletes an order by ID. 
+
+### Notes
+- All API endpoints must require authentication using Silhouette, except ‘/login’.
+- Only authenticated users with the Admin role should be allowed to perform CRUD operations on Users.
+- Only authenticated users with the Operator or Admin role should be allowed to retrieve product information from the External Products. (And then register these external products to the local Products table via exposed APIs)
+- Only authenticated users with the Operator or Admin role should be allowed to perform CUD operation on Products.
+- All authenticated Users should be allowed to retrieve the Products information so that they can create the Orders.
+- All authenticated Users should be allowed to perform CRUD operations on their own Orders.
+- Admin should be allowed to perform CRUD operations on all Orders. 

@@ -41,7 +41,7 @@ trait ProductService {
    * @param product The Product to update
    * @return
    */
-  def updateById(id: Long, product: Product): Future[Product]
+  def update(product: Product): Future[Product]
 
   /**
    * Delete Product by ID
@@ -65,7 +65,7 @@ class ProductServiceImpl @Inject()(productDao: ProductDao)(implicit ex: Executio
 
   override def save(product: Product): Future[Product] = productDao.save(product)
   
-  override def updateById(id: Long, product: Product): Future[Product] = productDao.updateById(id, product)
+  override def update(product: Product): Future[Product] = productDao.update(product)
 
   override def delete(id: Long): Future[Int] = productDao.delete(id)
 }

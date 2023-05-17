@@ -47,7 +47,7 @@ trait ProductDao {
    * @param Product The Product to update
    * @return
    */
-  def updateById(id: Long, product: Product): Future[Product]
+  def update(product: Product): Future[Product]
 
   /**
    * Deletes a Product
@@ -89,7 +89,7 @@ class ProductDaoImpl @Inject()(daoRunner: DaoRunner)(implicit ec: DbExecutionCon
     products.filter(_.id === id).delete
   }
 
-  override def updateById(id: Long, product: Product): Future[Product] = daoRunner.run {
-    products.filter(_.id === id).update(product).map(_ => product)
+  override def update(product: Product): Future[Product] = daoRunner.run {
+    products.filter(_.id === product.id).update(product).map(_ => product)
   }
 }

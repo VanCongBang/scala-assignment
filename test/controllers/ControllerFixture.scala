@@ -27,7 +27,7 @@ class ControllerFixture extends PlaySpec with Suite with GuiceOneAppPerSuite wit
   val mockUserDao: UserDao = mock[UserDao]
   val mockProductDao: ProductDao = mock[ProductDao]
 
-  val password: String = new BCryptPasswordHasher().hash("Bang12345").password
+  val password: String = new BCryptPasswordHasher().hash("fakeP@ssw0rd").password
   val identity: User = User(Some(1L), "bang.admin@nashtechglobal.com", "Admin", "Test" , Some(password), "Admin", LocalDateTime.now(), "Ho Chi Minh City", "098347323")
   implicit val env: Environment[JWTEnvironment] = new FakeEnvironment[JWTEnvironment](Seq(identity.loginInfo -> identity))
 
